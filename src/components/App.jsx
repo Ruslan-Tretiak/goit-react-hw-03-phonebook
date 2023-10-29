@@ -15,7 +15,19 @@ export class App extends Component {
     ],
     filter: ''
   }
+  componentDidMount() {
+    const savedContacts = localStorage.getItem('contacts');
+    if (savedContacts) {
+      this.setState({ contacts: JSON.parse(savedContacts) });
+    }
+  }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+// ... код додавання контакту ...
   handleAddContact = (newContact) => {
     const { name, number } = newContact;
     const checkContact = this.state.contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase());
@@ -35,17 +47,17 @@ export class App extends Component {
       contacts: [...prevState.contacts, contact]
     }));
   }
-
+// ... код видалення контакту ...
   handleDeleteContact = (id) => {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== id)
     }));
   }
-
+// ... код зміни фільтра ...
   handleFilterChange = (e) => {
     this.setState({ filter: e.target.value });
   }
-
+// ... код фільтрації контактів ...
   getFilteredContacts = () => {
     const { contacts, filter } = this.state;
     return contacts.filter(contact =>
